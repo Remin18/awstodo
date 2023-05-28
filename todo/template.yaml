@@ -26,7 +26,6 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: list.list_handler
-      Runtime: python3.9
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref TodoTable
@@ -38,6 +37,23 @@ Resources:
           Properties:
             Path: /todo
             Method: get
+
+  CreateTodo:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/
+      Handler: create.create_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodoTable
+      Architectures:
+        - x86_64
+      Events:
+        CreateTodo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /todo
+            Method: post
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
