@@ -5,7 +5,6 @@ Description: >
 
   Sample SAM Template for todo
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Runtime: python3.9
@@ -22,7 +21,7 @@ Resources:
         Type: String
 
   ListTodo:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
       Handler: list.list_handler
@@ -33,13 +32,13 @@ Resources:
         - x86_64
       Events:
         ListTodo:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /todo
             Method: get
 
   CreateTodo:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
       Handler: create.create_handler
@@ -50,15 +49,31 @@ Resources:
         - x86_64
       Events:
         CreateTodo:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /todo
             Method: post
+  DeleteTodo:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: delete.delete_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodoTable
+      Architectures:
+        - x86_64
+      Events:
+        DeleteTodo:
+          Type: Api
+          Properties:
+            Path: /todo/{todo_id}
+            Method: delete
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+  TodoApi:
+    Description: "API Gateway endpoint URL for Prod stage for Todo function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
