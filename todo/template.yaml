@@ -53,6 +53,7 @@ Resources:
           Properties:
             Path: /todo
             Method: post
+
   DeleteTodo:
     Type: AWS::Serverless::Function
     Properties:
@@ -69,6 +70,23 @@ Resources:
           Properties:
             Path: /todo/{todo_id}
             Method: delete
+
+  SearchTodo:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: search.search_handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TodoTable
+      Architectures:
+        - x86_64
+      Events:
+        SearchTodo:
+          Type: Api
+          Properties:
+            Path: /todo/search/{word}
+            Method: get
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
