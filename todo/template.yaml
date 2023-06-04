@@ -32,15 +32,10 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: TodoUserPool
+      MfaConfiguration: 'OFF'
       Policies:
         PasswordPolicy:
           MinimumLength: 8
-      UsernameAttributes:
-        - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Required: false
 
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
