@@ -19,6 +19,35 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: TodoUserPool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: CognitoClient
+      GenerateSecret: false
 
   ListTodo:
     Type: AWS::Serverless::Function
@@ -34,6 +63,7 @@ Resources:
         ListTodo:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /todo
             Method: get
 
@@ -51,6 +81,7 @@ Resources:
         CreateTodo:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /todo
             Method: post
 
@@ -68,6 +99,7 @@ Resources:
         DeleteTodo:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /todo/{todo_id}
             Method: delete
 
@@ -85,6 +117,7 @@ Resources:
         SearchTodo:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /todo/search/{word}
             Method: get
 
@@ -94,4 +127,4 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   TodoApi:
     Description: "API Gateway endpoint URL for Prod stage for Todo function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/todo/"
