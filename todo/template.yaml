@@ -12,6 +12,7 @@ Globals:
       Variables:
         TODO_TABLE: !Ref TodoTable
         USER_TABLE: !Ref UserTable
+        REGION: 'ap-northeast-1'
 
 Resources:
   TodoTable:
@@ -33,7 +34,6 @@ Resources:
     Properties:
       StageName: Prod
       Auth:
-        DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !GetAtt CognitoUserPool.Arn
@@ -57,6 +57,56 @@ Resources:
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
 
+  ConfirmUserRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ConfirmUserRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonCognitoPowerUser
+
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/user/
+      Handler: create.create_user_handler
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /create
+            Method: post
+      Environment:
+        Variables:
+          USERPOOL_ID: !Ref CognitoUserPool
+          CLIENT_ID: !Ref CognitoUserPoolClient
+
+  ConfirmUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/user/
+      Handler: confirm.confirm_handler
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /confirm
+            Method: post
+      Environment:
+        Variables:
+          USERPOOL_ID: !Ref CognitoUserPool
+          CLIENT_ID: !Ref CognitoUserPoolClient
+      Role: !GetAtt ConfirmUserRole.Arn
+
   ListTodo:
     Type: AWS::Serverless::Function
     Properties:
@@ -74,6 +124,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /todo
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   CreateTodo:
     Type: AWS::Serverless::Function
@@ -92,6 +144,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /todo
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   UpdateTodo:
     Type: AWS::Serverless::Function
@@ -110,6 +164,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /todo/{todo_id}
             Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   DeleteTodo:
     Type: AWS::Serverless::Function
@@ -128,6 +184,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /todo/{todo_id}
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   SearchTodo:
     Type: AWS::Serverless::Function
@@ -146,6 +204,8 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /todo/search/{word}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
