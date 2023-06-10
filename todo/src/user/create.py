@@ -1,32 +1,28 @@
-import boto3
-import os
-import http
 import json
+import os
+import uuid
+import http
 
-client_id = os.environ['CLIENT_ID']
-region = os.environ['REGION']
-client = boto3.client('cognito-idp', region_name=region)
+import boto3
+dynamodb = boto3.resource('dynamodb')
+user_table = dynamodb.Table(os.environ['USER_TABLE'])
 
-def create_user_handler(event, context):
+def create_handler(event, context):
 
-    body = json.loads(event['body'])
-    username = body['username']
-    password = body['password']
+    data = json.loads(event['body'])
+    userId = event["requestContext"]["authorizer"]["claims"]["sub"]
 
-    try:
-        response = client.sign_up(
-            ClientId=client_id,
-            Username=username,
-            Password=password
-        )
+    user = {
+        "user_id": userId,
+        "name": data["name"],
+        "exp": 0,
+        "next_exp": 10,
+        "level": 0,
+    }
 
-        return {
-            'statusCode': http.HTTPStatus.OK,
-            'body': 'user create successfully'
-        }
-    except Exception as e:
-        print(str(e))
-        return {
-            'statusCode': http.HTTPStatus.INTERNAL_SERVER_ERROR,
-            'body': 'An error occurred while creating user'
-        }
+    user_table.put_item(Item=user)
+
+    return {
+        "statusCode": http.HTTPStatus.CREATED,
+        "body": json.dumps(user)
+    }
