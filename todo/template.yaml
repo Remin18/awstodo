@@ -50,7 +50,7 @@ Resources:
   ListTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: src/todo/
       Handler: list.list_handler
       Policies:
         - DynamoDBReadPolicy:
@@ -68,7 +68,7 @@ Resources:
   CreateTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: src/todo/
       Handler: create.create_handler
       Policies:
         - DynamoDBCrudPolicy:
@@ -86,7 +86,7 @@ Resources:
   DeleteTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: src/todo/
       Handler: delete.delete_handler
       Policies:
         - DynamoDBCrudPolicy:
@@ -104,7 +104,7 @@ Resources:
   SearchTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: src/todo/
       Handler: search.search_handler
       Policies:
         - DynamoDBReadPolicy:
