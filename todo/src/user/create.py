@@ -16,7 +16,6 @@ def create_handler(event, context):
         "user_id": userId,
         "name": data["name"],
         "exp": 0,
-        "next_exp": 10,
         "level": 0,
     }
 
