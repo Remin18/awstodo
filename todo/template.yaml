@@ -43,6 +43,9 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       ClientName: CognitoClient
       GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
 
   ListTodo:
     Type: AWS::Serverless::Function
