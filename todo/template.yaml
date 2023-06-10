@@ -189,6 +189,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TodoTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
       Architectures:
         - x86_64
       Events:
