@@ -107,6 +107,22 @@ Resources:
           CLIENT_ID: !Ref CognitoUserPoolClient
       Role: !GetAtt ConfirmUserRole.Arn
 
+  AuthUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/user/
+      Handler: auth.auth_handler
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /auth
+            Method: post
+      Environment:
+        Variables:
+          CLIENT_ID: !Ref CognitoUserPoolClient
+
   ListTodo:
     Type: AWS::Serverless::Function
     Properties:
