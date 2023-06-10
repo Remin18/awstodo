@@ -141,6 +141,24 @@ Resources:
             Auth:
               Authorizer: CognitoAuthorizer
 
+  UserProfile:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/user/
+      Handler: profile.profile_handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserTable
+      Events:
+        CreateUserData:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /user
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+
   ListTodo:
     Type: AWS::Serverless::Function
     Properties:
