@@ -11,12 +11,15 @@ todo_table = dynamodb.Table(os.environ['TODO_TABLE'])
 
 def search_handler(event, context):
 
+    userId = event["requestContext"]["authorizer"]["claims"]["sub"]
     search_word = event['pathParameters']['word']
     decoded_word = unquote(search_word)
 
     res = todo_table.scan(
-        FilterExpression = Attr('detail').contains(decoded_word) |
-                           Attr('title').contains(decoded_word),
+        FilterExpression = (
+            Attr('detail').contains(decoded_word) |
+            Attr('title').contains(decoded_word)
+        ) & Attr('userId').contains(userId)
     )
 
     return {

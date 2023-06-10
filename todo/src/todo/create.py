@@ -10,9 +10,11 @@ todo_table = dynamodb.Table(os.environ['TODO_TABLE'])
 def create_handler(event, context):
 
     data = json.loads(event['body'])
+    userId = event["requestContext"]["authorizer"]["claims"]["sub"]
 
     todo = {
         "id": str(uuid.uuid4()),
+        "userId": userId,
         "deadline_date": "",
         "detail": "",
         "status": "new",
@@ -23,5 +25,5 @@ def create_handler(event, context):
 
     return {
         "statusCode": http.HTTPStatus.CREATED,
-        "body": json.dumps(todo),
+        "body": json.dumps(todo)
     }
