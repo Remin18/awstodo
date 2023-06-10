@@ -75,7 +75,7 @@ Resources:
   CreateUser:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/user/
+      CodeUri: src/auth/
       Handler: create.create_user_handler
       Events:
         CreateUser:
@@ -92,10 +92,10 @@ Resources:
   ConfirmUser:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/user/
+      CodeUri: src/auth/
       Handler: confirm.confirm_handler
       Events:
-        CreateUser:
+        ConfirmUser:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
@@ -110,10 +110,10 @@ Resources:
   AuthUser:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/user/
+      CodeUri: src/auth/
       Handler: auth.auth_handler
       Events:
-        CreateUser:
+        AuthUser:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
