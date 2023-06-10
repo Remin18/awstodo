@@ -15,10 +15,9 @@ def create_handler(event, context):
     todo = {
         "id": str(uuid.uuid4()),
         "userId": userId,
-        "deadline_date": "",
-        "detail": "",
+        "title": data["title"],
+        "detail": data["detail"],
         "status": "new",
-        "title": data["title"]
     }
 
     todo_table.put_item(Item=todo)
