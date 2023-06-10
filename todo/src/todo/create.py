@@ -17,7 +17,7 @@ def create_handler(event, context):
         "userId": userId,
         "title": data["title"],
         "detail": data["detail"],
-        "status": "new",
+        "status": 0,
     }
 
     todo_table.put_item(Item=todo)
