@@ -13,12 +13,20 @@ def create_user_handler(event, context):
     username = body['username']
     password = body['password']
 
-    response = client.sign_up(
-        ClientId=client_id,
-        Username=username,
-        Password=password
-    )
+    try:
+        response = client.sign_up(
+            ClientId=client_id,
+            Username=username,
+            Password=password
+        )
 
-    return {
-        'statusCode':http.HTTPStatus.OK
-    }
+        return {
+            'statusCode': http.HTTPStatus.OK,
+            'body': 'user create successfully'
+        }
+    except Exception as e:
+        print(str(e))
+        return {
+            'statusCode': http.HTTPStatus.INTERNAL_SERVER_ERROR,
+            'body': 'An error occurred while creating user'
+        }
