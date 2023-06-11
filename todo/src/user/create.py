@@ -23,5 +23,7 @@ def create_handler(event, context):
 
     return {
         "statusCode": http.HTTPStatus.CREATED,
-        "body": json.dumps(user)
+        "body": json.dumps({
+            "user": user
+        })
     }
