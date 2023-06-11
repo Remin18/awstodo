@@ -16,7 +16,7 @@ def create_handler(event, context):
         "user_id": userId,
         "name": data["username"],
         "exp": 0,
-        "level": 0,
+        "level": 1,
     }
 
     user_table.put_item(Item=user)
