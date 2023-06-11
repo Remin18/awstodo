@@ -12,7 +12,6 @@ Globals:
       Variables:
         TODO_TABLE: !Ref TodoTable
         USER_TABLE: !Ref UserTable
-        REGION: 'ap-northeast-1'
     Architectures:
       - x86_64
 
