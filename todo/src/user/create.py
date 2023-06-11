@@ -1,6 +1,5 @@
 import json
 import os
-import uuid
 import http
 
 import boto3

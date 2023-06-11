@@ -2,18 +2,12 @@ import os
 import http
 import json
 import boto3
-from decimal import Decimal
 from boto3.dynamodb.conditions import Attr
 from urllib.parse import unquote
+from common import JSONEncoder
 
 dynamodb = boto3.resource('dynamodb')
 todo_table = dynamodb.Table(os.environ['TODO_TABLE'])
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return int(obj)
-        return json.JSONEncoder.default(self, obj)
 
 def search_handler(event, context):
 

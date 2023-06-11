@@ -2,8 +2,9 @@ import json
 import os
 import uuid
 import http
-
 import boto3
+from common import JSONEncoder
+
 dynamodb = boto3.resource('dynamodb')
 todo_table = dynamodb.Table(os.environ['TODO_TABLE'])
 
@@ -24,5 +25,5 @@ def create_handler(event, context):
 
     return {
         "statusCode": http.HTTPStatus.CREATED,
-        "body": json.dumps(todo)
+        "body": json.dumps(todo, cls=JSONEncoder)
     }
