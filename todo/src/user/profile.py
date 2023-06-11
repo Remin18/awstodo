@@ -2,11 +2,17 @@ import os
 import http
 import json
 import boto3
+from decimal import Decimal
 from boto3.dynamodb.conditions import Key
-from common import JSONEncoder
 
 dynamodb = boto3.resource('dynamodb')
 user_table = dynamodb.Table(os.environ['USER_TABLE'])
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return int(obj)
+        return json.JSONEncoder.default(self, obj)
 
 def profile_handler(event, context):
 

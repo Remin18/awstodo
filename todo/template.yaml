@@ -81,19 +81,6 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonCognitoPowerUser
 
 ################################
-#### Function共有Layer
-################################
-  CommonLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      Description: common layer
-      ContentUri: src/common/
-      CompatibleRuntimes:
-        - python3.9
-    Metadata:
-      BuildMethod: python3.9
-
-################################
 #### Auth
 ################################
   CreateUser:
@@ -167,8 +154,6 @@ Resources:
             Method: post
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
   UserProfile:
     Type: AWS::Serverless::Function
@@ -187,8 +172,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
 ################################
 #### Todo
@@ -210,8 +193,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
   CreateTodo:
     Type: AWS::Serverless::Function
@@ -230,8 +211,6 @@ Resources:
             Method: post
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
   UpdateTodo:
     Type: AWS::Serverless::Function
@@ -252,8 +231,6 @@ Resources:
             Method: put
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
   DeleteTodo:
     Type: AWS::Serverless::Function
@@ -290,8 +267,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: CognitoAuthorizer
-      Layers:
-        - !Ref CommonLayer
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
