@@ -3,6 +3,7 @@ import http
 import json
 import boto3
 import bisect
+from decimal import Decimal
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
@@ -54,6 +55,12 @@ class UserInfo(object):
         )
         return res['Items'][0]
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return int(obj)
+        return json.JSONEncoder.default(self, obj)
+
 def update_handler(event, context):
 
     data = json.loads(event['body'])
@@ -75,11 +82,11 @@ def update_handler(event, context):
     )
 
     # 完了済みの場合に経験値を加算
-    if data["status"] == "1":
+    if data["status"] == 1:
         user_info = UserInfo(userId)
         user_info.add_exp(ADD_EXP)
 
     return {
         "statusCode": http.HTTPStatus.NO_CONTENT,
-        "body": json.dumps(todo)
+        "body": json.dumps(todo, cls=JSONEncoder)
     }
