@@ -5,8 +5,7 @@ import http
 
 client_id = os.environ['CLIENT_ID']
 user_pool_id = os.environ['USERPOOL_ID']
-region = os.environ['REGION']
-client = boto3.client('cognito-idp', region_name=region)
+client = boto3.client('cognito-idp')
 
 def confirm_handler(event, context):
 

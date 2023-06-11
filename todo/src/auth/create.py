@@ -4,8 +4,7 @@ import http
 import json
 
 client_id = os.environ['CLIENT_ID']
-region = os.environ['REGION']
-client = boto3.client('cognito-idp', region_name=region)
+client = boto3.client('cognito-idp')
 
 def create_user_handler(event, context):
 
